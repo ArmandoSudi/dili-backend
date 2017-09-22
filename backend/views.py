@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 
 from rest_framework import status
@@ -20,3 +20,12 @@ class PostList(generics.ListCreateAPIView):
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+
+@api_view(['PUT'])
+def update_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if request.method == 'PUT':
+        serializer = PostSerializer(post, data=request.data)
+        if serializer.is_valid():
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
