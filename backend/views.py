@@ -21,6 +21,10 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
+class PostUpdate(generics.UpdateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
 @api_view(['PUT'])
 def update_post(request, pk):
     post = get_object_or_404(Post, pk=pk)

@@ -25,7 +25,7 @@ SECRET_KEY = '=hz4b_gt!3zk2nyzt6@pbh0yf&2hy7#mfrp6*^a!eyfmoc&wu^'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.0.2.2', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['10.0.2.2', 'localhost', '127.0.0.1', 'sugar.pythonanywhere.com']
 
 
 # Application definition
