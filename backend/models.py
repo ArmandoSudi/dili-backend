@@ -17,22 +17,37 @@ class Post(models.Model):
         return self.product_name
 
 class AutoPost(models.Model):
-    engine_type_choice = (
+    fuel_type_choice = (
         ('DIESEL', 'Diesel'),
         ('PETROL', 'Petrol'),
+        ('ELECTRIC', 'Electric'),
     )
     state_choice = (
         ('NEW', 'New'),
         ('USED', 'Used'),
     )
+    transmission_choice = (
+        ('AUTOMATIC', 'Automatic'),
+        ('MANUAL', 'Manual'),
+    )
+    steering = (
+        ('LEFT', 'Left'),
+        ('RIGHT', 'Right'),
+    )
     brand = models.CharField(max_length=250)
     model = models.CharField(max_length=250)
     color = models.CharField(max_length=25)
-    engine_type = models.CharField(max_length=10, choices=engine_type_choice)
+    fuel = models.CharField(max_length=10, choices=fuel_type_choice, blank=True, null=True)
+    engine_size = models.IntegerField(blank=True, null=True)
+    transmission = models.CharField(max_length=10, choices=transmission_choice, blank=True, null=True)
     year_of_fabrication = models.IntegerField()
-    kilometers = models.IntegerField()
+    mileage = models.IntegerField(blank=True, null=True)
+    chassis = models.CharField(max_length=20, blank=True, null=True)
+    doors = models.IntegerField(blank=True, null=True)
+    exterior_color = models.CharField(max_length=25, blank=True, null=True)
+    interior_color = models.CharField(max_length=25, blank=True, null=True)
     state = models.CharField(max_length=10, choices=state_choice)
-    price = models.IntegerField()
+    price = models.IntegerField(blank=True, null=True)
     description = models.TextField()
 
     def __str__(self):
@@ -61,6 +76,8 @@ class ElectronicPost(models.Model):
     model = models.CharField(max_length=100)
     year_of_fabrication = models.IntegerField()
     description = models.TextField()
+    state = models.CharField(max_length=10, choices=state_choice, blank=True, null=True)
+    price = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.model + ' ' + self.brand + ' ' + price
@@ -88,7 +105,7 @@ class HousePost(models.Model):
     house_service_type = models.CharField(max_length=20, choices=house_service_type_choice)
     house_type = models.CharField(max_length=20, choices=house_type_choice)
     state = models.CharField(max_length=10, choices=state_choice)
-    price = models.IntegerField()
+    price = models.IntegerField(blank=True, null=True)
     description = models.TextField()
 
     def __str__(self):
