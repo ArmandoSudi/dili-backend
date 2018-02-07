@@ -1,6 +1,15 @@
 from django.db import models
 
 # Create your models
+class BasePost(models.Model):
+    latitude = models.DecimalField(decimal_places=2, max_digits=5, null=True)
+    longitude = models.DecimalField(decimal_places=2, max_digits=5, null=True)
+    town = models.CharField(max_length=250, null=True)
+    is_local = models.BooleanField(default=True)
+
+    class Meta:
+        abstract = True
+
 class Post(models.Model):
     post_owner_type = (
         ('DEALER', 'Dealer'),
@@ -16,7 +25,7 @@ class Post(models.Model):
     def __str__(self):
         return self.product_name
 
-class AutoPost(models.Model):
+class AutoPost(BasePost):
     fuel_type_choice = (
         ('DIESEL', 'Diesel'),
         ('PETROL', 'Petrol'),
@@ -50,7 +59,15 @@ class AutoPost(models.Model):
     description = models.TextField()
 
     def __str__(self):
-        return self.model + ' ' + self.price
+        return self.model + ' ' + str(self.price)
+
+class PhotoURL(models.Model):
+    url = models.URLField()
+    post_id = models.IntegerField()
+    is_thumbnail = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.url)
 
 class FurniturePost(models.Model):
     state_choice = (

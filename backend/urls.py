@@ -10,6 +10,11 @@ urlpatterns = [
     url(r'^update_post/(?P<pk>[0-9]+)/$', views.PostUpdate.as_view()),
     url(r'^update/(?P<pk>[0-9]+)/$$', views.update_post),
 
+    # posting image for a post
+    url(r'^post/photos/$', views.update_all, name='post_photo_url'),
+    url(r'^get/photos/(?P<post_id>[0-9]+)/$', views.get_photo_urls, name='get_photo_url'),
+
+
     # auto post urls
     url(r'^auto_posts/$', views.AutoPostList.as_view()),
     url(r'^auto_post/(?P<pk>[0-9]+)/$', views.AutoPostDetail.as_view()),
