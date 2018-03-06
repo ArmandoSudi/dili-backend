@@ -2,10 +2,15 @@ from django.db import models
 
 # Create your models
 class BasePost(models.Model):
-    latitude = models.DecimalField(decimal_places=2, max_digits=5, null=True)
-    longitude = models.DecimalField(decimal_places=2, max_digits=5, null=True)
-    town = models.CharField(max_length=250, null=True)
+    latitude = models.DecimalField(decimal_places=2, max_digits=5, null=True, default=0.0)
+    longitude = models.DecimalField(decimal_places=2, max_digits=5, null=True, default=0.0)
+    town = models.CharField(max_length=250, null=True, default="Kinshasa")
     is_local = models.BooleanField(default=True)
+    thumbnail_url = models.URLField(blank=True, null=True, default="http://via.placeholder.com/140x100")
+
+    def set_thumbnail_url(self, thumbnail_url):
+        self.thumbnail_url = thumbnail_url
+        self.save()
 
     class Meta:
         abstract = True
@@ -24,6 +29,17 @@ class Post(models.Model):
 
     def __str__(self):
         return self.product_name
+
+class MobilePost(BasePost):
+    state_choice = (
+        ('NEW', 'New'),
+        ('USED', 'Used'),
+    )
+    brand = models.CharField(max_length=250)
+    model = models.CharField(max_length=250)
+    price = models.IntegerField()
+    state = models.CharField(max_length=10, choices=state_choice)
+    description = models.TextField()
 
 class AutoPost(BasePost):
     fuel_type_choice = (
@@ -98,7 +114,7 @@ class ElectronicPost(models.Model):
     def __str__(self):
         return self.model + ' ' + self.brand + ' ' + price
 
-class HousePost(models.Model):
+class HousePost(BasePost):
     state_choice = (
         ('NEW', 'New'),
         ('USED', 'Used'),

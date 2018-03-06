@@ -1,10 +1,14 @@
 from rest_framework import serializers
 from .models import Post, AutoPost, FurniturePost, ElectronicPost, HousePost, LawnPost, JobAndServicePost
-from .models import PhotoURL
+from .models import PhotoURL, MobilePost
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
+        fields = '__all__'
+class MobilePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MobilePost
         fields = '__all__'
 
 class AutoPostSerializer(serializers.ModelSerializer):

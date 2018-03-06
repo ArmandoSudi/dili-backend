@@ -11,10 +11,13 @@ urlpatterns = [
     url(r'^update/(?P<pk>[0-9]+)/$$', views.update_post),
 
     # posting image for a post
-    url(r'^post/photo/$', views.PhotoURLList.as_view(), name='post_photo_url'),
+    url(r'^post/photo/(?P<category_code>[0-9]+)$', views.post_photo, name='post_photo_url'),
     url(r'^post/photos/$', views.update_all, name='post_photo_urls'),
     url(r'^get/photos/(?P<post_id>[0-9]+)/$', views.get_photo_urls, name='get_photo_url'),
 
+    # mobile and tablette Posts
+    url(r'^mobile_posts/$', views.MobilePostList.as_view()),
+    url(r'^mobile_post/(?P<pk>[0-9]+)/$', views.MobilePostDetail.as_view()),
 
     # auto post urls
     url(r'^auto_posts/$', views.AutoPostList.as_view()),
@@ -39,7 +42,6 @@ urlpatterns = [
     # job and service post urls
     url(r'^job_and_service_posts/$', views.JobAndServicePostList.as_view()),
     url(r'^job_and_servicep_post/(?P<pk>[0-9]+)/$', views.JobAndServicePostDetail.as_view()),
-
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

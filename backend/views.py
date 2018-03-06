@@ -10,10 +10,10 @@ from rest_framework import generics
 from rest_framework.parsers import JSONParser
 
 from .models import Post, AutoPost, FurniturePost, ElectronicPost, HousePost, LawnPost, JobAndServicePost
-from .models import PhotoURL
+from .models import PhotoURL, MobilePost
 from .serializers import PostSerializer, AutoPostSerializer, FurniturePostSerializer
 from .serializers import ElectronicPostSerializer, HousePostSerializer, LawnPostSerializer, JobAndServicePostSerializer
-from .serializers import PhotoURLSerializer
+from .serializers import PhotoURLSerializer, MobilePostSerializer
 
 def index(request):
     return HttpResponse("Hello from Dili !")
@@ -29,6 +29,14 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
 class PostUpdate(generics.UpdateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+
+class MobilePostList(generics.ListCreateAPIView):
+    queryset = MobilePost.objects.all()
+    serializer_class = MobilePostSerializer
+
+class MobilePostDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = MobilePost.objects.all()
+    serializer_class = MobilePostSerializer
 
 class AutoPostList(generics.ListCreateAPIView):
     queryset = AutoPost.objects.all()
@@ -82,6 +90,48 @@ class PhotoURLList(generics.ListCreateAPIView):
     queryset = PhotoURL.objects.all()
     serializer_class = PhotoURLSerializer
 
+# def set_thumbnail(post_id, thumbnail_url):
+#     post = Post.objects.all().get(pk=post_id)
+#     post.thumbail = photoUrl.url
+#     post.save();
+
+@csrf_exempt
+def post_photo(request, category_code):
+    """
+    List all the PHOTO URL for that POST
+    """
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = PhotoURLSerializer(data=data)
+        if serializer.is_valid():
+            photoUrl = serializer.save()
+            set_thumbnail(photoUrl.post_id, category_code, photoUrl.url)
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+def set_thumbnail(post_id, category_code, thumbnail_url):
+    if category_code == 0: # mobile category
+        pass
+
+    elif category_code == 1: # Electronic category
+        pass
+    elif category_code == 2: # Car category
+        autoPost = AutoPost.objects.get(pk=post_id)
+        autoPost.set_thumbnail_url(thumbnail_url)
+
+    elif category_code == 3: # Furniture category
+        housePost = RealEstate.objects.get(pk=post_id)
+        housePost.set_thumbnail_url(thumbnail_url)
+
+    elif category_code == 4: # Fashion category
+        pass
+    elif category_code == 5: # Real Estate category
+        pass
+    elif category_code == 6: # Jobs and services category
+        pass
+    elif category_code == 7: # Show Category
+        pass
+
 @api_view(['PUT'])
 def update_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
@@ -90,16 +140,6 @@ def update_post(request, pk):
         if serializer.is_valid():
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@csrf_exempt
-def update_photo_url(request, pk):
-    if request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = PhotoURLSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
 
 @csrf_exempt
 def update_all(request):

@@ -1,10 +1,13 @@
 from django.contrib import admin
 
 from .models import Post, AutoPost, FurniturePost, ElectronicPost, HousePost, LawnPost, JobAndServicePost
-from .models import PhotoURL
+from .models import PhotoURL, MobilePost
 
 class PostAdmin(admin.ModelAdmin):
     model = Post
+
+class MobilePostAdmin(admin.ModelAdmin):
+    model = MobilePost
 
 class AutoPostAdmin(admin.ModelAdmin):
     model = AutoPost
@@ -31,6 +34,7 @@ class JobAndServicePostAdmin(admin.ModelAdmin):
     model = JobAndServicePost
 
 admin.site.register(Post, PostAdmin)
+admin.site.register(MobilePost, MobilePostAdmin)
 admin.site.register(AutoPost, AutoPostAdmin)
 admin.site.register(FurniturePost, FurniturePostAdmin)
 admin.site.register(ElectronicPost, ElectronicPostAdmin)
