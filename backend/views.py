@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import logging
 
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -14,6 +15,9 @@ from .models import PhotoURL, MobilePost
 from .serializers import PostSerializer, AutoPostSerializer, FurniturePostSerializer
 from .serializers import ElectronicPostSerializer, HousePostSerializer, LawnPostSerializer, JobAndServicePostSerializer
 from .serializers import PhotoURLSerializer, MobilePostSerializer
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 def index(request):
     return HttpResponse("Hello from Dili !")
@@ -43,6 +47,7 @@ class AutoPostList(generics.ListCreateAPIView):
     serializer_class = AutoPostSerializer
 
 class AutoPostDetail(generics.RetrieveUpdateDestroyAPIView):
+    logger.info("hihihihihi")
     queryset = AutoPost.objects.all()
     serializer_class = AutoPostSerializer
 
@@ -95,40 +100,45 @@ class PhotoURLList(generics.ListCreateAPIView):
 #     post.thumbail = photoUrl.url
 #     post.save();
 
-@csrf_exempt
+@api_view(['POST'])
 def post_photo(request, category_code):
     """
-    List all the PHOTO URL for that POST
+    Post a PHOTO URL for that POST, make it a thumbnail if it is a thumbnail
     """
     if request.method == 'POST':
         data = JSONParser().parse(request)
         serializer = PhotoURLSerializer(data=data)
         if serializer.is_valid():
             photoUrl = serializer.save()
-            set_thumbnail(photoUrl.post_id, category_code, photoUrl.url)
+            set_thumbnail(photoUrl.post_id, int(category_code), photoUrl.url)
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
 def set_thumbnail(post_id, category_code, thumbnail_url):
     if category_code == 0: # mobile category
-        pass
+        mobilePost = MobilePost.objects.get(pk=post_id)
+        mobilePost.set_thumbnail_url(thumbnail_url)
 
     elif category_code == 1: # Electronic category
         pass
+
     elif category_code == 2: # Car category
         autoPost = AutoPost.objects.get(pk=post_id)
         autoPost.set_thumbnail_url(thumbnail_url)
 
     elif category_code == 3: # Furniture category
-        housePost = RealEstate.objects.get(pk=post_id)
-        housePost.set_thumbnail_url(thumbnail_url)
+        pass
 
     elif category_code == 4: # Fashion category
         pass
+
     elif category_code == 5: # Real Estate category
-        pass
+        housePost = HousePost.objects.get(pk=post_id)
+        housePost.set_thumbnail_url(thumbnail_url)
+
     elif category_code == 6: # Jobs and services category
         pass
+
     elif category_code == 7: # Show Category
         pass
 

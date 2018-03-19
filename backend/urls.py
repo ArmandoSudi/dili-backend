@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^update/(?P<pk>[0-9]+)/$$', views.update_post),
 
     # posting image for a post
-    url(r'^post/photo/(?P<category_code>[0-9]+)$', views.post_photo, name='post_photo_url'),
+    url(r'^post/photo/(?P<category_code>[0-9]+)/$', views.post_photo, name='post_photo_url'),
     url(r'^post/photos/$', views.update_all, name='post_photo_urls'),
     url(r'^get/photos/(?P<post_id>[0-9]+)/$', views.get_photo_urls, name='get_photo_url'),
 

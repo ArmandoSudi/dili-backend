@@ -141,7 +141,7 @@ class HousePost(BasePost):
     description = models.TextField()
 
     def __str__(self):
-        return self.address + ' ' + self.price
+        return self.address + ' ' + str(self.price)
 
 class LawnPost(models.Model):
     address = models.CharField(max_length=250)
