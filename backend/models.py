@@ -80,6 +80,7 @@ class AutoPost(BasePost):
 class PhotoURL(models.Model):
     url = models.URLField()
     post_id = models.IntegerField()
+    category_code = models.IntegerField()
     is_thumbnail = models.BooleanField(default=False)
 
     def __str__(self):

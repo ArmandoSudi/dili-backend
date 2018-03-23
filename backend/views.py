@@ -164,11 +164,11 @@ def update_all(request):
             return JsonResponse(serializer.data, status=201, safe=False)
         return JsonResponse(serializer.errors, status=400, safe=False)
 
-def get_photo_urls(request, post_id):
+def get_photo_urls(request, post_id, category_code):
     '''
     Getting the urls of PHOTOS for a POST passing the POST ID
     '''
     if request.method == 'GET':
-        p = PhotoURL.objects.filter(post_id=post_id)
+        p = PhotoURL.objects.filter(post_id=post_id, category_code=category_code)
         ps = PhotoURLSerializer(p, many=True)
         return JsonResponse(ps.data, safe=False)
