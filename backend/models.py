@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models
 class BasePost(models.Model):
     latitude = models.DecimalField(decimal_places=2, max_digits=5, null=True, default=0.0)
@@ -7,6 +8,7 @@ class BasePost(models.Model):
     town = models.CharField(max_length=250, null=True, default="Kinshasa")
     is_local = models.BooleanField(default=True)
     thumbnail_url = models.URLField(blank=True, null=True, default="http://via.placeholder.com/140x100")
+    user_uid = models.CharField(max_length=50, null=True, default="")
 
     def set_thumbnail_url(self, thumbnail_url):
         self.thumbnail_url = thumbnail_url
@@ -14,6 +16,7 @@ class BasePost(models.Model):
 
     class Meta:
         abstract = True
+
 
 class Post(models.Model):
     post_owner_type = (
@@ -26,9 +29,9 @@ class Post(models.Model):
     post_owner_name = models.CharField(max_length=100)
     post_image_url = models.CharField(max_length=300, default="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Ferrari_California_T_-_Mondial_de_l%27Automobile_de_Paris_2014_-_003.jpg/280px-Ferrari_California_T_-_Mondial_de_l%27Automobile_de_Paris_2014_-_003.jpg")
 
-
     def __str__(self):
         return self.product_name
+
 
 class MobilePost(BasePost):
     state_choice = (
@@ -40,6 +43,7 @@ class MobilePost(BasePost):
     price = models.IntegerField()
     state = models.CharField(max_length=10, choices=state_choice)
     description = models.TextField()
+
 
 class AutoPost(BasePost):
     fuel_type_choice = (
@@ -77,6 +81,7 @@ class AutoPost(BasePost):
     def __str__(self):
         return self.model + ' ' + str(self.price)
 
+
 class PhotoURL(models.Model):
     url = models.URLField()
     post_id = models.IntegerField()
@@ -85,6 +90,7 @@ class PhotoURL(models.Model):
 
     def __str__(self):
         return str(self.url)
+
 
 class FurniturePost(models.Model):
     state_choice = (
@@ -100,6 +106,7 @@ class FurniturePost(models.Model):
     def __str__(self):
         return self.name + ' ' + self.brand + ' ' + self.price
 
+
 class ElectronicPost(models.Model):
     state_choice = (
         ('NEW', 'New'),
@@ -114,6 +121,7 @@ class ElectronicPost(models.Model):
 
     def __str__(self):
         return self.model + ' ' + self.brand + ' ' + price
+
 
 class HousePost(BasePost):
     state_choice = (
@@ -144,11 +152,13 @@ class HousePost(BasePost):
     def __str__(self):
         return self.address + ' ' + str(self.price)
 
+
 class LawnPost(models.Model):
     address = models.CharField(max_length=250)
     length = models.IntegerField()
     width = models.IntegerField()
     price = models.IntegerField()
+
 
 class JobAndServicePost(models.Model):
     type_choice = (
@@ -158,7 +168,7 @@ class JobAndServicePost(models.Model):
     title = models.CharField(max_length=250)
     description = models.TextField()
     price = models.IntegerField()
-    #duration
+    # duration
 
     def __str__(self):
         return self.title + ' ' + self.price
