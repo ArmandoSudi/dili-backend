@@ -7,6 +7,7 @@ class BasePost(models.Model):
     longitude = models.DecimalField(decimal_places=2, max_digits=5, null=True, default=0.0)
     town = models.CharField(max_length=250, null=True, default="Kinshasa")
     is_local = models.BooleanField(default=True)
+    is_published = models.BooleanField(default=False)
     thumbnail_url = models.URLField(blank=True, null=True, default="http://via.placeholder.com/140x100")
     user_uid = models.CharField(max_length=50, null=True, default="")
 
