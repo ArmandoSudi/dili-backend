@@ -18,7 +18,6 @@ class BasePost(models.Model):
     class Meta:
         abstract = True
 
-
 class Post(models.Model):
     post_owner_type = (
         ('DEALER', 'Dealer'),
@@ -33,7 +32,6 @@ class Post(models.Model):
     def __str__(self):
         return self.product_name
 
-
 class MobilePost(BasePost):
     state_choice = (
         ('NEW', 'New'),
@@ -44,7 +42,6 @@ class MobilePost(BasePost):
     price = models.IntegerField()
     state = models.CharField(max_length=10, choices=state_choice)
     description = models.TextField()
-
 
 class AutoPost(BasePost):
     fuel_type_choice = (
@@ -82,7 +79,6 @@ class AutoPost(BasePost):
     def __str__(self):
         return self.model + ' ' + str(self.price)
 
-
 class PhotoURL(models.Model):
     url = models.URLField()
     post_id = models.IntegerField()
@@ -91,7 +87,6 @@ class PhotoURL(models.Model):
 
     def __str__(self):
         return str(self.url)
-
 
 class FurniturePost(models.Model):
     state_choice = (
@@ -153,13 +148,11 @@ class HousePost(BasePost):
     def __str__(self):
         return self.address + ' ' + str(self.price)
 
-
 class LawnPost(models.Model):
     address = models.CharField(max_length=250)
     length = models.IntegerField()
     width = models.IntegerField()
     price = models.IntegerField()
-
 
 class JobAndServicePost(models.Model):
     type_choice = (
@@ -173,3 +166,12 @@ class JobAndServicePost(models.Model):
 
     def __str__(self):
         return self.title + ' ' + self.price
+
+class PostSummary(models.Model):
+    name = models.CharField(max_length=250)
+    price = models.IntegerField()
+    category_code = models.IntegerField()
+    post_id = models.IntegerField()
+
+    def __str__(self):
+        return self.name + " " + self.price + " " + self.category_code

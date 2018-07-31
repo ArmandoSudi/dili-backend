@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^post/(?P<pk>[0-9]+)/$', views.PostDetail.as_view()),
     url(r'^update_post/(?P<pk>[0-9]+)/$', views.PostUpdate.as_view()),
     url(r'^update/(?P<pk>[0-9]+)/$$', views.update_post),
+    url(r'^my_posts/(?P<user_uid>[\w-]+)/$', views.get_my_posts),
 
     # posting image for a post
     url(r'^post/photo/(?P<category_code>[0-9]+)/$', views.post_photo, name='post_photo_url'),

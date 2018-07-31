@@ -9,12 +9,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.parsers import JSONParser
+import json
 
 from .models import Post, AutoPost, FurniturePost, ElectronicPost, HousePost, LawnPost, JobAndServicePost
-from .models import PhotoURL, MobilePost
+from .models import PhotoURL, MobilePost, PostSummary
 from .serializers import PostSerializer, AutoPostSerializer, FurniturePostSerializer
 from .serializers import ElectronicPostSerializer, HousePostSerializer, LawnPostSerializer, JobAndServicePostSerializer
-from .serializers import PhotoURLSerializer, MobilePostSerializer
+from .serializers import PhotoURLSerializer, MobilePostSerializer, PostSummarySerializer
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -172,3 +173,25 @@ def get_photo_urls(request, post_id, category_code):
         p = PhotoURL.objects.filter(post_id=post_id, category_code=category_code)
         ps = PhotoURLSerializer(p, many=True)
         return JsonResponse(ps.data, safe=False)
+
+def get_my_posts(request, user_uid):
+
+    if request.method == "GET":
+        auto_posts = AutoPost.objects.filter(user_uid=user_uid)
+        mobile_posts = MobilePost.objects.filter(user_uid=user_uid)
+        house_posts = HousePost.objects.filter(user_uid=user_uid)
+
+        post_summary = []
+
+        for auto_post in auto_posts:
+            post_summary.append(PostSummary(post_id=auto_post.id, name=auto_post.brand, price=auto_post.price, category_code=2))
+
+        for mobile_post in mobile_posts:
+            post_summary.append(PostSummary(post_id=mobile_post.id, name=mobile_post.brand, price=mobile_post.price, category_code=6))
+
+        for house_post in house_posts:
+            post_summary.append(PostSummary(post_id=house_post.id, name=house_post.address, price=house_post.price, category_code=5))
+
+        my_posts = PostSummarySerializer(post_summary, many=True)
+
+    return JsonResponse(my_posts.data, safe=False)
