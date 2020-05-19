@@ -11,11 +11,10 @@ from rest_framework import generics
 from rest_framework.parsers import JSONParser
 import json
 
-from .models import Post, AutoPost, FurniturePost, ElectronicPost, HousePost, LawnPost, JobAndServicePost
-from .models import PhotoURL, MobilePost, PostSummary
-from .serializers import PostSerializer, AutoPostSerializer, FurniturePostSerializer
-from .serializers import ElectronicPostSerializer, HousePostSerializer, LawnPostSerializer, JobAndServicePostSerializer
-from .serializers import PhotoURLSerializer, MobilePostSerializer, PostSummarySerializer
+from .models import Category, Currency, UserType, User, Post, Location 
+from .models import PhotoURL
+from .serializers import PostSerializer
+from .serializers import PhotoURLSerializer
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -35,62 +34,7 @@ class PostUpdate(generics.UpdateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
-class MobilePostList(generics.ListCreateAPIView):
-    queryset = MobilePost.objects.all()
-    serializer_class = MobilePostSerializer
 
-class MobilePostDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = MobilePost.objects.all()
-    serializer_class = MobilePostSerializer
-
-class AutoPostList(generics.ListCreateAPIView):
-    queryset = AutoPost.objects.all()
-    serializer_class = AutoPostSerializer
-
-class AutoPostDetail(generics.RetrieveUpdateDestroyAPIView):
-    logger.info("hihihihihi")
-    queryset = AutoPost.objects.all()
-    serializer_class = AutoPostSerializer
-
-class FurniturePostList(generics.ListCreateAPIView):
-    queryset = FurniturePost.objects.all()
-    serializer_class = FurniturePostSerializer
-
-class FurniturePostDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = FurniturePost.objects.all()
-    serializer_class = FurniturePostSerializer
-
-class ElectronicPostList(generics.ListCreateAPIView):
-    queryset = ElectronicPost.objects.all()
-    serializer_class = ElectronicPostSerializer
-
-class ElectronicPostDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = ElectronicPost.objects.all()
-    serializer_class = ElectronicPostSerializer
-
-class HousePostList(generics.ListCreateAPIView):
-    queryset = HousePost.objects.all()
-    serializer_class = HousePostSerializer
-
-class HousePostDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = HousePost.objects.all()
-    serializer_class = HousePostSerializer
-
-class LawnPostList(generics.ListCreateAPIView):
-    queryset = LawnPost.objects.all()
-    serializer_class = LawnPostSerializer
-
-class LawnPostDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = LawnPost.objects.all()
-    serializer_class = LawnPostSerializer
-
-class JobAndServicePostList(generics.ListCreateAPIView):
-    queryset = JobAndServicePost.objects.all()
-    serializer_class = JobAndServicePostSerializer
-
-class JobAndServicePostDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = JobAndServicePost.objects.all()
-    serializer_class = JobAndServicePostSerializer
 
 class PhotoURLList(generics.ListCreateAPIView):
     queryset = PhotoURL.objects.all()
@@ -115,33 +59,6 @@ def post_photo(request, category_code):
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
-def set_thumbnail(post_id, category_code, thumbnail_url):
-    if category_code == 0: # mobile category
-        mobilePost = MobilePost.objects.get(pk=post_id)
-        mobilePost.set_thumbnail_url(thumbnail_url)
-
-    elif category_code == 1: # Electronic category
-        pass
-
-    elif category_code == 2: # Car category
-        autoPost = AutoPost.objects.get(pk=post_id)
-        autoPost.set_thumbnail_url(thumbnail_url)
-
-    elif category_code == 3: # Furniture category
-        pass
-
-    elif category_code == 4: # Fashion category
-        pass
-
-    elif category_code == 5: # Real Estate category
-        housePost = HousePost.objects.get(pk=post_id)
-        housePost.set_thumbnail_url(thumbnail_url)
-
-    elif category_code == 6: # Jobs and services category
-        pass
-
-    elif category_code == 7: # Show Category
-        pass
 
 @api_view(['PUT'])
 def update_post(request, pk):
