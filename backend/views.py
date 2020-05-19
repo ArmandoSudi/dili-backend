@@ -13,7 +13,7 @@ import json
 
 from .models import Category, Currency, UserType, User, Post, Location 
 from .models import PhotoURL
-from .serializers import PostSerializer
+from .serializers import PostSerializer, CategorySerializer
 from .serializers import PhotoURLSerializer
 
 # Get an instance of a logger
@@ -34,11 +34,13 @@ class PostUpdate(generics.UpdateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
-
-
 class PhotoURLList(generics.ListCreateAPIView):
     queryset = PhotoURL.objects.all()
     serializer_class = PhotoURLSerializer
+
+class CategoryList(generics.ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
 # def set_thumbnail(post_id, thumbnail_url):
 #     post = Post.objects.all().get(pk=post_id)

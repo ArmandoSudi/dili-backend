@@ -11,6 +11,8 @@ urlpatterns = [
     url(r'^update/(?P<pk>[0-9]+)/$$', views.update_post),
     url(r'^my_posts/(?P<user_uid>[\w-]+)/$', views.get_my_posts),
 
+    url(r'^categories/$', views.CategoryList.as_view()),
+
     # posting image for a post
     url(r'^post/photo/(?P<category_code>[0-9]+)/$', views.post_photo, name='post_photo_url'),
     url(r'^post/photos/$', views.update_all, name='post_photo_urls'),
