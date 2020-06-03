@@ -6,6 +6,8 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = '__all__'
+        extra_kwargs = {'thumbnail_url': {'required': False}, 'publication_date': {'required': False}, }
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
