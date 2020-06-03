@@ -3,10 +3,12 @@ from .models import Post, Category, Currency, Location, UserType, User
 from .models import PhotoURL
 
 class PostSerializer(serializers.ModelSerializer):
+    thumbnail_url = serializers.URLField(required=False, allow_null=True)
+    publication_date = serializers.DateTimeField(required=False, allow_null=True)
     class Meta:
         model = Post
         fields = '__all__'
-        extra_kwargs = {'thumbnail_url': {'required': False}, 'publication_date': {'required': False}, }
+       
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
