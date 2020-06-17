@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.timezone import now
 
+
 class Category(models.Model):
     label = models.CharField(max_length=250)
     parent_category = models.ForeignKey('self',null=True, blank=True, on_delete=models.SET_NULL)

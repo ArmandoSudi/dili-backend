@@ -1,7 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.timezone import now
+from datetime import datetime
 import logging
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -20,13 +24,9 @@ from .serializers import PhotoURLSerializer
 logger = logging.getLogger(__name__)
 
 def index(request):
-    return HttpResponse("Hello from Dili !")
+    return HttpResponse("<h1>Hello from Dili !</h1>")
 
 class PostList(generics.ListCreateAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-
-class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
@@ -42,12 +42,38 @@ class CategoryList(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
-# def set_thumbnail(post_id, thumbnail_url):
-#     post = Post.objects.all().get(pk=post_id)
-#     post.thumbail = photoUrl.url
-#     post.save();
+@csrf_exempt
+@api_view(['POST', 'GET'])
+def post_list(request):
 
-@api_view(['POST'])
+    if request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = PostSerializer(data=data)
+        if serializer.is_valid():
+            post = serializer.save(publication_date=datetime.now(), thumbnail_url='www.google.com')
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+    if request.method == 'GET':
+        posts = Post.objects.all()
+        serializer = PostSerializer(posts, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+def get_post(request, category_code):
+    """
+    Return all the post whose category are child to category_code
+    """
+    subcategories = Category.objects.filter(parent_category=category_code)
+    ids = []
+    for category in subcategories:
+        ids.append(category.id)
+
+    posts = Post.objects.filter(category__in=ids)
+    serializer = PostSerializer(posts, many=True)
+
+    return JsonResponse(serializer.data, safe=False)
+
+@api_view(['POST', 'PUT'])
 def post_photo(request, category_code):
     """
     Post a PHOTO URL for that POST, make it a thumbnail if it is a thumbnail
@@ -60,7 +86,6 @@ def post_photo(request, category_code):
             set_thumbnail(photoUrl.post_id, int(category_code), photoUrl.url)
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
-
 
 @api_view(['PUT'])
 def update_post(request, pk):
@@ -114,3 +139,47 @@ def get_my_posts(request, user_uid):
         my_posts = PostSummarySerializer(post_summary, many=True)
 
     return JsonResponse(my_posts.data, safe=False)
+
+@csrf_exempt
+def upload_file(request):
+    if request.method == 'POST' and request.FILES['picture']:
+        """
+        Uploading the picture first
+        """
+        myFile = request.FILES[ 'picture']
+        
+        fs = FileSystemStorage()
+        print(myFile.name)
+        generagedFileName = fs.generate_filename(myFile.name)
+        fileName = fs.save(generagedFileName, myFile)
+        print("FILE NAME: " + fileName)
+        uploaded_file_url = fs.url(fileName)
+        print("FILE URL: " + uploaded_file_url)
+
+        print(request.POST)
+
+        # # Saving the post to DB"
+
+        post = Post()
+        post.product_brand = request.POST['product_brand']
+        post.product_model = request.POST['product_model']
+        post.prodcut_price = int(request.POST['product_price'])
+        post.product_description = request.POST['product_description']
+        post.category = Category.objects.get(pk=int(request.POST['category_id'])) 
+        post.currency = Currency.objects.get(pk=int(request.POST['currency_id']))
+        post.publication_date = datetime.now()
+        post.thumbnail_url = "http://10.0.2.2:8000" + uploaded_file_url
+
+        post.save()
+
+        return JsonResponse('{"response": "ok"}', status=201, safe=False)
+    return JsonResponse('{"response": "could not upload file"}', status=400, safe=False)
+    
+def get_categories(request, category_code):
+    """
+    Getting the child category of a parent category of id category_id
+    """
+    if request.method == 'GET':
+        categories = Category.objects.filter(parent_category=category_code)
+        categories_serialized = CategorySerializer(categories, many=True)
+        return JsonResponse(categories_serialized.data, safe=False)
