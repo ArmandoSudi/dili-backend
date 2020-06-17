@@ -168,7 +168,7 @@ def upload_file(request):
         post.category = Category.objects.get(pk=int(request.POST['category_id'])) 
         post.currency = Currency.objects.get(pk=int(request.POST['currency_id']))
         post.publication_date = datetime.now()
-        post.thumbnail_url = "http://10.0.2.2:8000" + uploaded_file_url
+        post.thumbnail_url = "http://sugar.pythonanywhere.com" + uploaded_file_url
 
         post.save()
 
