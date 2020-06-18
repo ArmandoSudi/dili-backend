@@ -64,14 +64,21 @@ def get_post(request, category_code):
     Return all the post whose category are child to category_code
     """
     subcategories = Category.objects.filter(parent_category=category_code)
-    ids = []
-    for category in subcategories:
-        ids.append(category.id)
+    if (len(subcategories) > 0) :
 
-    posts = Post.objects.filter(category__in=ids)
-    serializer = PostSerializer(posts, many=True)
+        ids = []
 
-    return JsonResponse(serializer.data, safe=False)
+        for category in subcategories:
+            ids.append(category.id)
+
+        posts = Post.objects.filter(category__in=ids)
+        serializer = PostSerializer(posts, many=True)
+
+        return JsonResponse(serializer.data, safe=False)
+    else:
+        posts = Post.objects.filter(category=category_code)
+        serializer = PostSerializer(posts, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
 @api_view(['POST', 'PUT'])
 def post_photo(request, category_code):
